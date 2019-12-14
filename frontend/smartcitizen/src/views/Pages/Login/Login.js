@@ -13,8 +13,11 @@ class Login extends Component {
   }
 
   renderRedirect = () => {
-    if (this.state.error.type == "success") {
-      return <Redirect to='/' />
+    if (this.state.redirect == true) {
+      this.forceUpdate();
+
+      return <Redirect to='/'/>
+
     }
   }
 
@@ -60,14 +63,14 @@ class Login extends Component {
         .then(function(data) {
           console.log(data);
           this_.setState({error: data});
-          if (this_.state.error.type == "succes") {
+          if (this_.state.error.type == "success") {
             localStorage.setItem('loggedIn' , true);
+            alert(localStorage.getItem('loggedIn'));
             localStorage.setItem('userID', data.userID);
             console.log(localStorage.getItem('userID'));
             this_.state.redirect = true;
           }
-          else
-            localStorage.setItem('loggedIn' , false);
+
         })
       })
 

@@ -1,5 +1,6 @@
 import React, { Component, lazy, Suspense } from 'react';
 import { Bar, Line } from 'react-chartjs-2';
+import { Map, GoogleApiWrapper } from 'google-maps-react';
 import {
   Badge,
   Button,
@@ -462,7 +463,38 @@ class Dashboard extends Component {
     this.state = {
       dropdownOpen: false,
       radioSelected: 2,
+      totalParkingSpots: 0,
+      totalParkingFreeSpots: 0,
+      totalParkingLots: 0,
+      totalUsers: 0 
     };
+
+    this.getData();
+  }
+
+  getData() {
+    var request = new Request('http://172.31.3.30:8080/getStats' , {
+      method: 'GET',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+    })
+
+    var this_ = this;
+    fetch(request)
+      .then(function(response){
+      response.json()
+        .then(function(data) {
+          console.log(data);
+          if (data.type == "success") {
+              this_.setState ({
+                totalParkingFreeSpots: data.data.totalParkingFreeSpots, 
+                totalParkingSpots: data.data.totalParkingSpots, 
+                totalUsers: data.data.totalUsers, 
+                totalParkingLots: data.data.totalParkingLots
+              });  
+          }
+        
+        })
+      })
   }
 
   toggle() {
@@ -500,7 +532,7 @@ class Dashboard extends Component {
                     </DropdownMenu>
                   </ButtonDropdown>
                 </ButtonGroup>
-                <div className="text-value">983</div>
+                <div className="text-value">{this.state.totalParkingSpots}</div>
                 <div>Locuri de parcare</div>
               </CardBody>
               <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
@@ -524,7 +556,7 @@ class Dashboard extends Component {
                     </DropdownMenu>
                   </Dropdown>
                 </ButtonGroup>
-                <div className="text-value">243</div>
+              <div className="text-value">{this.state.totalParkingFreeSpots}</div>
                 <div>Locuri de parcare libere</div>
               </CardBody>
               <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
@@ -548,7 +580,7 @@ class Dashboard extends Component {
                     </DropdownMenu>
                   </Dropdown>
                 </ButtonGroup>
-                <div className="text-value">60</div>
+                <div className="text-value">{this.state.totalParkingLots}</div>
                 <div>Parcari</div>
               </CardBody>
               <div className="chart-wrapper" style={{ height: '70px' }}>
@@ -572,7 +604,7 @@ class Dashboard extends Component {
                     </DropdownMenu>
                   </ButtonDropdown>
                 </ButtonGroup>
-                <div className="text-value">18</div>
+                <div className="text-value">{this.state.totalUsers}</div>
                 <div>Utilizatori</div>
               </CardBody>
               <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
@@ -582,9 +614,30 @@ class Dashboard extends Component {
           </Col>
         </Row>
 
-      </div>
+      <Row>
+      <Col xs="12" lg="12">
+        <Card>
+        <div id = "mapBox" style = {{ height: '100vh', width: '100%'}}>
+        <Map
+                    google={this.props.google}
+                    zoom={14}
+                    style = {{
+                      position: 'relative',
+                      width: '100%',
+                      height: '100%'
+                    }}
+                    initialCenter={{ lat: 45.657974, lng: 25.601198}}
+                  />
+          </div>
+          </Card>
+          </Col>
+          </Row>
+            </div>
     );
   }
 }
 
-export default Dashboard;
+//export default Dashboard;
+export default GoogleApiWrapper({
+  apiKey: 'AIzaSyA6FQieeZenDBBEFD2nYVmNj6r-lpMAd4o'
+})(Dashboard);
