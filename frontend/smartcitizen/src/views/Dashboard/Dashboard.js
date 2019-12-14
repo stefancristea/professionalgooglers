@@ -1,6 +1,6 @@
 import React, { Component, lazy, Suspense } from 'react';
 import { Bar, Line } from 'react-chartjs-2';
-import { Map, GoogleApiWrapper } from 'google-maps-react';
+import { Map, GoogleApiWrapper , Marker, InfoWindow} from 'google-maps-react';
 import {
   Badge,
   Button,
@@ -20,6 +20,10 @@ import {
   Progress,
   Row,
   Table,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader
 } from 'reactstrap';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities'
@@ -466,14 +470,51 @@ class Dashboard extends Component {
       totalParkingSpots: 0,
       totalParkingFreeSpots: 0,
       totalParkingLots: 0,
-      totalUsers: 0 
+      totalUsers: 0,
+      parkingLots: [],
+      showingInfoWindow: false,
+      activeMarker: {},
+      selectedPlace: {}
     };
 
     this.getData();
   }
 
+  returnLotInfo = (index, propriety) => {
+    if(index == undefined || this.state.parkingLots.length == 0) 
+      return '';
+    return this.state.parkingLots[index][propriety];
+  }
+
+  onMarkerClick = (props, marker, e) => {
+
+    this.setState({
+      selectedPlace: props,
+      activeMarker: marker,
+      showingInfoWindow: true
+    });
+  }
+
+  displayMarkers = () => {
+    
+    return this.state.parkingLots.map((parkingLot, index) => {
+      //console.log(parkingLot);
+
+     return <Marker position = {{
+        lat: parkingLot.latitude,
+        lng: parkingLot.longitude
+      }} onClick = {this.onMarkerClick} name = {index} />
+    })
+  
+  }
+
   getData() {
     var request = new Request('http://172.31.3.30:8080/getStats' , {
+      method: 'GET',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+    })
+
+    var parkingLotsRequest = new Request('http://172.31.3.30:8080/getParkingLots' , {
       method: 'GET',
       headers: new Headers({ 'Content-Type': 'application/json' }),
     })
@@ -495,6 +536,18 @@ class Dashboard extends Component {
         
         })
       })
+
+      fetch(parkingLotsRequest)
+      .then(function(response){
+      response.json()
+        .then(function(data) {
+          if (data.type == "success") {
+              this_.setState ({
+                parkingLots: data.results
+              });  
+          }
+        })
+      })
   }
 
   toggle() {
@@ -514,6 +567,7 @@ class Dashboard extends Component {
   render() {
 
     return (
+
       <div className="animated fadeIn">
         <Row>
           <Col xs="12" sm="6" lg="3">
@@ -618,7 +672,7 @@ class Dashboard extends Component {
       <Col xs="12" lg="12">
         <Card>
         <div id = "mapBox" style = {{ height: '100vh', width: '100%'}}>
-        <Map
+                  <Map
                     google={this.props.google}
                     zoom={14}
                     style = {{
@@ -626,8 +680,18 @@ class Dashboard extends Component {
                       width: '100%',
                       height: '100%'
                     }}
-                    initialCenter={{ lat: 45.657974, lng: 25.601198}}
-                  />
+                    initialCenter={{ lat: 45.657974, lng: 25.601198}}>
+                      {this.displayMarkers()}
+                      <InfoWindow
+                      marker={this.state.activeMarker}
+                      visible={this.state.showingInfoWindow}>
+                        <div>
+                          {this.returnLotInfo(this.state.selectedPlace.name, 'name')}
+                        </div>
+                      </InfoWindow>
+                    </Map>
+                    
+                  
           </div>
           </Card>
           </Col>
