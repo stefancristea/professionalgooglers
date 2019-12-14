@@ -1,461 +1,43 @@
 import React, { Component, lazy, Suspense } from 'react';
-import { Bar, Line } from 'react-chartjs-2';
+import ReactDOM from 'react-dom';
 import { Map, GoogleApiWrapper , Marker, InfoWindow} from 'google-maps-react';
 import {
   Badge,
   Button,
   ButtonDropdown,
   ButtonGroup,
-  ButtonToolbar,
   Card,
   CardBody,
-  CardFooter,
-  CardHeader,
-  CardTitle,
   Col,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  Progress,
   Row,
-  Table,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader
 } from 'reactstrap';
-import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
-import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities'
 
-const Widget03 = lazy(() => import('../../views/Widgets/Widget03'));
 
-const brandPrimary = getStyle('--primary')
-const brandSuccess = getStyle('--success')
-const brandInfo = getStyle('--info')
-const brandWarning = getStyle('--warning')
-const brandDanger = getStyle('--danger')
+class InfoWindowEx extends Component {
+  constructor(props) {
+    super(props);
+    this.infoWindowRef = React.createRef();
+    this.contentElement = document.createElement(`div`);
+  }
 
-// Card Chart 1
-const cardChartData1 = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: brandPrimary,
-      borderColor: 'rgba(255,255,255,.55)',
-      data: [65, 59, 84, 84, 51, 55, 40],
-    },
-  ],
-};
+  componentDidUpdate(prevProps) {
+    if (this.props.children !== prevProps.children) {
+      ReactDOM.render(
+        React.Children.only(this.props.children),
+        this.contentElement
+      );
+      this.infoWindowRef.current.infowindow.setContent(this.contentElement);
+    }
+  }
 
-const cardChartOpts1 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        gridLines: {
-          color: 'transparent',
-          zeroLineColor: 'transparent',
-        },
-        ticks: {
-          fontSize: 2,
-          fontColor: 'transparent',
-        },
-
-      }],
-    yAxes: [
-      {
-        display: false,
-        ticks: {
-          display: false,
-          min: Math.min.apply(Math, cardChartData1.datasets[0].data) - 5,
-          max: Math.max.apply(Math, cardChartData1.datasets[0].data) + 5,
-        },
-      }],
-  },
-  elements: {
-    line: {
-      borderWidth: 1,
-    },
-    point: {
-      radius: 4,
-      hitRadius: 10,
-      hoverRadius: 4,
-    },
+  render() {
+    return <InfoWindow ref={this.infoWindowRef} {...this.props} />;
   }
 }
-
-
-// Card Chart 2
-const cardChartData2 = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: brandInfo,
-      borderColor: 'rgba(255,255,255,.55)',
-      data: [1, 18, 9, 17, 34, 22, 11],
-    },
-  ],
-};
-
-const cardChartOpts2 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        gridLines: {
-          color: 'transparent',
-          zeroLineColor: 'transparent',
-        },
-        ticks: {
-          fontSize: 2,
-          fontColor: 'transparent',
-        },
-
-      }],
-    yAxes: [
-      {
-        display: false,
-        ticks: {
-          display: false,
-          min: Math.min.apply(Math, cardChartData2.datasets[0].data) - 5,
-          max: Math.max.apply(Math, cardChartData2.datasets[0].data) + 5,
-        },
-      }],
-  },
-  elements: {
-    line: {
-      tension: 0.00001,
-      borderWidth: 1,
-    },
-    point: {
-      radius: 4,
-      hitRadius: 10,
-      hoverRadius: 4,
-    },
-  },
-};
-
-// Card Chart 3
-const cardChartData3 = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: 'rgba(255,255,255,.2)',
-      borderColor: 'rgba(255,255,255,.55)',
-      data: [78, 81, 80, 45, 34, 12, 40],
-    },
-  ],
-};
-
-const cardChartOpts3 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        display: false,
-      }],
-    yAxes: [
-      {
-        display: false,
-      }],
-  },
-  elements: {
-    line: {
-      borderWidth: 2,
-    },
-    point: {
-      radius: 0,
-      hitRadius: 10,
-      hoverRadius: 4,
-    },
-  },
-};
-
-// Card Chart 4
-const cardChartData4 = {
-  labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: 'rgba(255,255,255,.3)',
-      borderColor: 'transparent',
-      data: [78, 81, 80, 45, 34, 12, 40, 75, 34, 89, 32, 68, 54, 72, 18, 98],
-    },
-  ],
-};
-
-const cardChartOpts4 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        display: false,
-        barPercentage: 0.6,
-      }],
-    yAxes: [
-      {
-        display: false,
-      }],
-  },
-};
-
-// Social Box Chart
-const socialBoxData = [
-  { data: [65, 59, 84, 84, 51, 55, 40], label: 'facebook' },
-  { data: [1, 13, 9, 17, 34, 41, 38], label: 'twitter' },
-  { data: [78, 81, 80, 45, 34, 12, 40], label: 'linkedin' },
-  { data: [35, 23, 56, 22, 97, 23, 64], label: 'google' },
-];
-
-const makeSocialBoxData = (dataSetNo) => {
-  const dataset = socialBoxData[dataSetNo];
-  const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-      {
-        backgroundColor: 'rgba(255,255,255,.1)',
-        borderColor: 'rgba(255,255,255,.55)',
-        pointHoverBackgroundColor: '#fff',
-        borderWidth: 2,
-        data: dataset.data,
-        label: dataset.label,
-      },
-    ],
-  };
-  return () => data;
-};
-
-const socialChartOpts = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  responsive: true,
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        display: false,
-      }],
-    yAxes: [
-      {
-        display: false,
-      }],
-  },
-  elements: {
-    point: {
-      radius: 0,
-      hitRadius: 10,
-      hoverRadius: 4,
-      hoverBorderWidth: 3,
-    },
-  },
-};
-
-// sparkline charts
-const sparkLineChartData = [
-  {
-    data: [35, 23, 56, 22, 97, 23, 64],
-    label: 'New Clients',
-  },
-  {
-    data: [65, 59, 84, 84, 51, 55, 40],
-    label: 'Recurring Clients',
-  },
-  {
-    data: [35, 23, 56, 22, 97, 23, 64],
-    label: 'Pageviews',
-  },
-  {
-    data: [65, 59, 84, 84, 51, 55, 40],
-    label: 'Organic',
-  },
-  {
-    data: [78, 81, 80, 45, 34, 12, 40],
-    label: 'CTR',
-  },
-  {
-    data: [1, 13, 9, 17, 34, 41, 38],
-    label: 'Bounce Rate',
-  },
-];
-
-const makeSparkLineData = (dataSetNo, variant) => {
-  const dataset = sparkLineChartData[dataSetNo];
-  const data = {
-    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-    datasets: [
-      {
-        backgroundColor: 'transparent',
-        borderColor: variant ? variant : '#c2cfd6',
-        data: dataset.data,
-        label: dataset.label,
-      },
-    ],
-  };
-  return () => data;
-};
-
-const sparklineChartOpts = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  responsive: true,
-  maintainAspectRatio: true,
-  scales: {
-    xAxes: [
-      {
-        display: false,
-      }],
-    yAxes: [
-      {
-        display: false,
-      }],
-  },
-  elements: {
-    line: {
-      borderWidth: 2,
-    },
-    point: {
-      radius: 0,
-      hitRadius: 10,
-      hoverRadius: 4,
-      hoverBorderWidth: 3,
-    },
-  },
-  legend: {
-    display: false,
-  },
-};
-
-// Main Chart
-
-//Random Numbers
-function random(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-var elements = 27;
-var data1 = [];
-var data2 = [];
-var data3 = [];
-
-for (var i = 0; i <= elements; i++) {
-  data1.push(random(50, 200));
-  data2.push(random(80, 100));
-  data3.push(65);
-}
-
-const mainChart = {
-  labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: hexToRgba(brandInfo, 10),
-      borderColor: brandInfo,
-      pointHoverBackgroundColor: '#fff',
-      borderWidth: 2,
-      data: data1,
-    },
-    {
-      label: 'My Second dataset',
-      backgroundColor: 'transparent',
-      borderColor: brandSuccess,
-      pointHoverBackgroundColor: '#fff',
-      borderWidth: 2,
-      data: data2,
-    },
-    {
-      label: 'My Third dataset',
-      backgroundColor: 'transparent',
-      borderColor: brandDanger,
-      pointHoverBackgroundColor: '#fff',
-      borderWidth: 1,
-      borderDash: [8, 5],
-      data: data3,
-    },
-  ],
-};
-
-const mainChartOpts = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips,
-    intersect: true,
-    mode: 'index',
-    position: 'nearest',
-    callbacks: {
-      labelColor: function(tooltipItem, chart) {
-        return { backgroundColor: chart.data.datasets[tooltipItem.datasetIndex].borderColor }
-      }
-    }
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        gridLines: {
-          drawOnChartArea: false,
-        },
-      }],
-    yAxes: [
-      {
-        ticks: {
-          beginAtZero: true,
-          maxTicksLimit: 5,
-          stepSize: Math.ceil(250 / 5),
-          max: 250,
-        },
-      }],
-  },
-  elements: {
-    point: {
-      radius: 0,
-      hitRadius: 10,
-      hoverRadius: 4,
-      hoverBorderWidth: 3,
-    },
-  },
-};
 
 class Dashboard extends Component {
   constructor(props) {
@@ -495,15 +77,17 @@ class Dashboard extends Component {
     });
   }
 
-  displayMarkers = () => {
-    
-    return this.state.parkingLots.map((parkingLot, index) => {
-      //console.log(parkingLot);
+  redirectToReserve = e => {
+    e.preventDefault();
+    this.props.history.push('/rezerva/'+this.state.selectedPlace.name);   
+  }
 
-     return <Marker position = {{
+  displayMarkers = () => {
+      return this.state.parkingLots.map((parkingLot, index) => {
+      return <Marker position = {{
         lat: parkingLot.latitude,
         lng: parkingLot.longitude
-      }} onClick = {this.onMarkerClick} name = {index} />
+      }} onClick = {this.onMarkerClick} name = {index}/>
     })
   
   }
@@ -589,9 +173,6 @@ class Dashboard extends Component {
                 <div className="text-value">{this.state.totalParkingSpots}</div>
                 <div>Locuri de parcare</div>
               </CardBody>
-              <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
-                <Line data={cardChartData2} options={cardChartOpts2} height={70} />
-              </div>
             </Card>
           </Col>
 
@@ -613,9 +194,6 @@ class Dashboard extends Component {
               <div className="text-value">{this.state.totalParkingFreeSpots}</div>
                 <div>Locuri de parcare libere</div>
               </CardBody>
-              <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
-                <Line data={cardChartData1} options={cardChartOpts1} height={70} />
-              </div>
             </Card>
           </Col>
 
@@ -637,9 +215,6 @@ class Dashboard extends Component {
                 <div className="text-value">{this.state.totalParkingLots}</div>
                 <div>Parcari</div>
               </CardBody>
-              <div className="chart-wrapper" style={{ height: '70px' }}>
-                <Line data={cardChartData3} options={cardChartOpts3} height={70} />
-              </div>
             </Card>
           </Col>
 
@@ -661,9 +236,6 @@ class Dashboard extends Component {
                 <div className="text-value">{this.state.totalUsers}</div>
                 <div>Utilizatori</div>
               </CardBody>
-              <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
-                <Bar data={cardChartData4} options={cardChartOpts4} height={70} />
-              </div>
             </Card>
           </Col>
         </Row>
@@ -682,16 +254,24 @@ class Dashboard extends Component {
                     }}
                     initialCenter={{ lat: 45.657974, lng: 25.601198}}>
                       {this.displayMarkers()}
-                      <InfoWindow
+                      <InfoWindowEx
                       marker={this.state.activeMarker}
                       visible={this.state.showingInfoWindow}>
                         <div>
-                          {this.returnLotInfo(this.state.selectedPlace.name, 'name')}
+                          <b>Denumire:</b> {this.returnLotInfo(this.state.selectedPlace.name, 'name')}<br></br>
+                          <b>Stare actuala:</b> { this.returnLotInfo(this.state.selectedPlace.name, 'emptySpots') } din {this.returnLotInfo(this.state.selectedPlace.name, 'capacity')} locuri disponibile <br></br>
+                          
+                          { (this.returnLotInfo(this.state.selectedPlace.name, 'emptySpots')) ? 
+                          ( <center>
+                          <Col sm xs="12" className="text-center mt-3">
+                            <Button onClick={e =>this.redirectToReserve(e)}>
+                                <i className="fa fa-lightbulb-o"></i> &nbsp; rezerva
+                            </Button> 
+                          </Col>
+                          </center> ) : null }
                         </div>
-                      </InfoWindow>
+                      </InfoWindowEx>
                     </Map>
-                    
-                  
           </div>
           </Card>
           </Col>

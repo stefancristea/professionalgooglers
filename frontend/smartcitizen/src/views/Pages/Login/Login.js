@@ -14,44 +14,30 @@ class Login extends Component {
 
   renderRedirect = () => {
     if (this.state.redirect == true) {
-      this.forceUpdate();
-
       return <Redirect to='/'/>
-
     }
   }
 
-  renderSignUpRedirect = () => {
-    console.log("aici");
-    if (this.state.redirectToSignUp == true) {
-      return <Redirect to='/register' />
-    }
-  }
-
-  change=e =>
+  change = e =>
   {
-      this.setState({
-          [e.target.name]: e.target.value});
+      this.setState({[e.target.name]: e.target.value});
   };
 
-  onSubmitSignUp =e => {
+  onSubmitSignUp = e => {
     this.props.history.push('/register');
   }
 
-  onSubmit =e=> {
+  onSubmit = e => {
     e.preventDefault();
-    
-   // this.props.onSubmit(this.state);
 
     let data = {
         userEmail: this.state.email,
         userPassword: this.state.password
     }
-    console.log(this.state.email);
-    console.log(this.state.password);
     
     var request = new Request('http://172.31.3.30:8080/loginUser' , {
       method: 'POST',
+      credentials: 'same-origin',
       headers: new Headers({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(data)
     })
@@ -61,16 +47,14 @@ class Login extends Component {
       .then(function(response){
       response.json()
         .then(function(data) {
-          console.log(data);
           this_.setState({error: data});
-          if (this_.state.error.type == "success") {
-            localStorage.setItem('loggedIn' , true);
-            alert(localStorage.getItem('loggedIn'));
-            localStorage.setItem('userID', data.userID);
-            console.log(localStorage.getItem('userID'));
-            this_.state.redirect = true;
+          if (this_.state.error.type == "success") {            
+            
+            window.LoggedIn = true;
+            window.userID = data.userID;
+            
+            this_.setState({redirect : true}); 
           }
-
         })
       })
 
@@ -130,9 +114,6 @@ class Login extends Component {
                   <CardBody className="text-center">
                     <div>
                       <h2>Sign up</h2>
-
-                             {this.renderSignUpRedirect()}
-
                         <Button color="primary" className="mt-3" active tabIndex={-1} onClick={e =>this.onSubmitSignUp(e)}>Register Now!</Button>
                     </div>
                   </CardBody>

@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Badge, UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem } from 'reactstrap';
+import { Badge, UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem, Button } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import { AppAsideToggler, AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
-import logo from '../../assets/img/brand/logo.svg'
-import sygnet from '../../assets/img/brand/sygnet.svg'
+import {AppSidebarToggler}  from '@coreui/react';
 
 const propTypes = {
   children: PropTypes.node,
@@ -15,10 +13,15 @@ const defaultProps = {};
 
 class DefaultHeader extends Component {
 
-  
-  componentDidMount() {
-    console.log("Mounted");
-    this.forceUpdate();
+  constructor(props) {
+    super(props);
+  }
+
+  doLogout = e => {
+    e.preventDefault();
+    window.LoggedIn = false;
+    this.forceUpdate();        
+    window.location = '/';
   }
 
   render() {
@@ -46,12 +49,11 @@ class DefaultHeader extends Component {
           
         <NavItem className="d-md-down-none">
           {
-            localStorage.getItem('loggedIn') == "false" ?
+            (window.LoggedIn == false || window.LoggedIn == undefined)  ?
             ( <span>
             <NavLink to="/login" className="nav-link"><i className="icon-key"></i> Log In</NavLink> </span>) :
             <span>
-            <NavLink to="/" className="nav-link"><i className="icon-key" onClick = {localStorage.setItem('loggedIn', "false")}></i> Log Out</NavLink> 
-            
+            <NavLink className="nav-link" onClick={e =>this.doLogout(e)}><i className="icon-key"></i> Log Out</NavLink>
             </span>
           }
           </NavItem>
