@@ -164,28 +164,38 @@ app.post('/addRent', function(request, response) {
     });
 });
 
-app.post('/extendRent', function(request, response) {    
-    if(request.body.rentId == undefined || request.body.Time == undefined)
-        return response.send({ status : 'error', message: 'Incomplete parameters.'});
-        
-    let timestampExpireTime = request.body.Time * 60000;
-
-    db.query('update rentals set expire_time = expire_time + ? where id = ?;', [request.body.rentId, timestampExpireTime], function(error, results, fields) {
-        if(error) 
-            return response.send({status: 'error', message: 'MySQL error!'}); 
-
-        response.send({status: 'success', message: 'Park time extended.'});
-    });
-});
-
 
 app.post('/myParkings', function(request, response) {
     if(request.body.userID == undefined)
         return response.send({ status : 'error', message: 'Incomplete parameters.'});
 
-    db.query('select *, parking_lots.name, parking_lots.latitude, parking_lots.longitude from rentals left join parking_lots on rentals.parklot_id = parking_lots.id where user_id = ?;', [request.body.userID], function (error, results) {
+    db.query('select rentals.*, parking_lots.name, parking_lots.latitude, parking_lots.longitude from rentals left join parking_lots on rentals.parklot_id = parking_lots.id where user_id = ?;', [request.body.userID], function (error, results) {
         if(error)
             return response.send({status : 'error', message: 'MySQL Error!'});
         response.send({status: 'success', parkings: results, serverTime: Date.now()});
+    });
+});
+
+app.post('/deleteParking', function(request, response) {
+    if(request.body.userID == undefined || request.body.spotID == undefined)
+        return response.send({ status : 'error', message: 'Incomplete parameters.'});
+
+    db.query('update rentals set `expire_time` = ? where `id` = ? and `user_id` = ?;', [Date.now(), request.body.spotID, request.body.userID], function(error, results, fields) {
+        if(error)
+            return reponse.send({status: 'error', message: 'MySQL error'});
+        response.send({status: 'success', message: 'Parking updated!'});
+    }); 
+});
+
+app.post('/extendRent', function(request, response) {    
+    if(request.body.rentId == undefined || request.body.Time == undefined || request.body.userID == undefined)
+        return response.send({ status : 'error', message: 'Incomplete parameters.'});
+        
+    let timestampExpireTime = request.body.Time * 60000;
+
+    db.query('update rentals set expire_time = expire_time + ? where id = ? and user_id = ?;', [timestampExpireTime, request.body.rentId, request.body.userID], function(error, results, fields) {
+        if(error) 
+            return response.send({status: 'error', message: 'MySQL error!'}); 
+        response.send({status: 'success', message: 'Park time extended.'});
     });
 });

@@ -58,7 +58,7 @@ class Dashboard extends Component {
   }
 
   setLocationCallback = (location) => {
-    this.state.userLocation = location.coords;
+    this.setState({userLocation : location.coords});
   };
 
   returnLotInfo = (index, propriety) => {
@@ -91,12 +91,12 @@ class Dashboard extends Component {
   }
 
   getData() {
-    var request = new Request('http://172.31.3.30:8080/getStats' , {
+    var request = new Request(process.env.REACT_APP_BACKEND_ADDRESS+'/getStats' , {
       method: 'GET',
       headers: new Headers({ 'Content-Type': 'application/json' }),
     })
 
-    var parkingLotsRequest = new Request('http://172.31.3.30:8080/getParkingLots' , {
+    var parkingLotsRequest = new Request(process.env.REACT_APP_BACKEND_ADDRESS+'/getParkingLots' , {
       method: 'GET',
       headers: new Headers({ 'Content-Type': 'application/json' }),
     })
@@ -106,7 +106,6 @@ class Dashboard extends Component {
       .then(function(response){
       response.json()
         .then(function(data) {
-          console.log(data);
           if (data.type == "success") {
               this_.setState ({
                 totalParkingFreeSpots: data.data.totalParkingFreeSpots, 

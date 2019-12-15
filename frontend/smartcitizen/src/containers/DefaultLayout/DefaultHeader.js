@@ -33,6 +33,9 @@ class DefaultHeader extends Component {
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="md" mobile />
         <AppSidebarToggler className="d-md-down-none" display="lg" />
+
+        <i className = {"fa fa-car"}></i> &nbsp; <b>Smart Citizen</b>
+
         <Nav className="ml-auto" navbar>
           
         <NavItem className="d-md-down-none">

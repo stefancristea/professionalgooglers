@@ -39,7 +39,7 @@ class Register extends Component {
     console.log(this.state.email);
     console.log(this.state.password);
     
-    var request = new Request('http://172.31.3.30:8080/registerUser' , {
+    var request = new Request(process.env.REACT_APP_BACKEND_ADDRESS+'/registerUser' , {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(data)

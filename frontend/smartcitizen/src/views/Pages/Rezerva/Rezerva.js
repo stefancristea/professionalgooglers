@@ -59,7 +59,7 @@ class Rezerva extends Component {
   }
 
   getData() {
-    var request = new Request('http://172.31.3.30:8080/getParkingLotInformation/'+this.props.match.params.id, {
+    var request = new Request(process.env.REACT_APP_BACKEND_ADDRESS+'/getParkingLotInformation/'+this.props.match.params.id, {
       method: 'GET',
       headers: new Headers({ 'Content-Type': 'application/json' }),
     });
@@ -131,7 +131,7 @@ class Rezerva extends Component {
       userID: window.userID
     }
 
-    var request = new Request('http://172.31.3.30:8080/addRent', {
+    var request = new Request(process.env.REACT_APP_BACKEND_ADDRESS+'/addRent', {
       method: 'POST',
       headers: new Headers({'Content-Type': 'application/json'}),
       body: JSON.stringify(data)
@@ -163,7 +163,7 @@ class Rezerva extends Component {
             <div className={"card-body"}>
               <div className={'row'}>
                 <div className={'col-md-8'}>
-                  <div className={'table-responsive-sm'}><table className={'table table-striped'}><thead><tr><th className={'center'}>#</th><th>Item</th><th>Loc parcare</th><th className={'center'}>Timp</th><th className={'right'}>Cost per minut</th><th className={'right'}>Total</th></tr></thead><tbody><tr><td className={'center'}>1</td><td className={'left'}>Inchiriere loc parcare</td><td className={'left'}>Loc { this.state.spot }</td><td className={'center'}>{ this.state.time }</td><td className={'right'}>0.10 RON</td><td className={'right'}>{ this.state.time*0.10 } RON</td></tr></tbody></table></div>    
+                  <div className={'table-responsive-sm'}><table className={'table table-striped'}><thead><tr><th className={'center'}>#</th><th>Item</th><th>Loc parcare</th><th className={'center'}>Timp</th><th className={'right'}>Cost per minut</th><th className={'right'}>Total</th></tr></thead><tbody><tr><td className={'center'}>1</td><td className={'left'}>Inchiriere loc parcare</td><td className={'left'}>Loc { this.state.spot }</td><td className={'center'}>{ this.state.time } minute</td><td className={'right'}>0.10 RON</td><td className={'right'}>{ this.state.time*0.10 } RON</td></tr></tbody></table></div>    
                 </div>
               <div className={"col-md-4"}>
               <table className={"table table-clear"}>

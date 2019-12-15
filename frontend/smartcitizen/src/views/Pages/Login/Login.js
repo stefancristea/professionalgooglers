@@ -35,7 +35,7 @@ class Login extends Component {
         userPassword: this.state.password
     }
     
-    var request = new Request('http://172.31.3.30:8080/loginUser' , {
+    var request = new Request(process.env.REACT_APP_BACKEND_ADDRESS+'/loginUser' , {
       method: 'POST',
       credentials: 'same-origin',
       headers: new Headers({ 'Content-Type': 'application/json' }),
