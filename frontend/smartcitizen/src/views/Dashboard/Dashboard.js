@@ -2,17 +2,10 @@ import React, { Component, lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Map, GoogleApiWrapper , Marker, InfoWindow} from 'google-maps-react';
 import {
-  Badge,
   Button,
-  ButtonDropdown,
-  ButtonGroup,
   Card,
   CardBody,
   Col,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
   Row,
 } from 'reactstrap';
 
@@ -56,11 +49,17 @@ class Dashboard extends Component {
       parkingLots: [],
       showingInfoWindow: false,
       activeMarker: {},
-      selectedPlace: {}
+      selectedPlace: {},
+      userLocation: null
     };
 
+    navigator.geolocation.getCurrentPosition(this.setLocationCallback);
     this.getData();
   }
+
+  setLocationCallback = (location) => {
+    this.state.userLocation = location.coords;
+  };
 
   returnLotInfo = (index, propriety) => {
     if(index == undefined || this.state.parkingLots.length == 0) 
@@ -89,7 +88,6 @@ class Dashboard extends Component {
         lng: parkingLot.longitude
       }} onClick = {this.onMarkerClick} name = {index}/>
     })
-  
   }
 
   getData() {
@@ -157,21 +155,9 @@ class Dashboard extends Component {
           <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-info">
               <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <ButtonDropdown id='card1' isOpen={this.state.card1} toggle={() => { this.setState({ card1: !this.state.card1 }); }}>
-                    <DropdownToggle caret className="p-0" color="transparent">
-                      <i className="icon-settings"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem disabled>Disabled action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </ButtonDropdown>
-                </ButtonGroup>
                 <div className="text-value">{this.state.totalParkingSpots}</div>
                 <div>Locuri de parcare</div>
+                <br></br>
               </CardBody>
             </Card>
           </Col>
@@ -179,20 +165,9 @@ class Dashboard extends Component {
           <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-primary">
               <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <Dropdown id='card2' isOpen={this.state.card2} toggle={() => { this.setState({ card2: !this.state.card2 }); }}>
-                    <DropdownToggle className="p-0" color="transparent">
-                      <i className="icon-location-pin"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </ButtonGroup>
               <div className="text-value">{this.state.totalParkingFreeSpots}</div>
-                <div>Locuri de parcare libere</div>
+              <div>Locuri de parcare libere</div>
+              <br></br>
               </CardBody>
             </Card>
           </Col>
@@ -200,20 +175,9 @@ class Dashboard extends Component {
           <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-warning">
               <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <Dropdown id='card3' isOpen={this.state.card3} toggle={() => { this.setState({ card3: !this.state.card3 }); }}>
-                    <DropdownToggle caret className="p-0" color="transparent">
-                      <i className="icon-settings"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </ButtonGroup>
                 <div className="text-value">{this.state.totalParkingLots}</div>
                 <div>Parcari</div>
+                <br></br>
               </CardBody>
             </Card>
           </Col>
@@ -221,20 +185,9 @@ class Dashboard extends Component {
           <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-danger">
               <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <ButtonDropdown id='card4' isOpen={this.state.card4} toggle={() => { this.setState({ card4: !this.state.card4 }); }}>
-                    <DropdownToggle caret className="p-0" color="transparent">
-                      <i className="icon-settings"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </ButtonDropdown>
-                </ButtonGroup>
                 <div className="text-value">{this.state.totalUsers}</div>
                 <div>Utilizatori</div>
+                <br></br>
               </CardBody>
             </Card>
           </Col>
@@ -254,6 +207,7 @@ class Dashboard extends Component {
                     }}
                     initialCenter={{ lat: 45.657974, lng: 25.601198}}>
                       {this.displayMarkers()}
+                      {(this.state.userLocation != null) ? <Marker position = {{ lat: this.state.userLocation.latitude, lng: this.state.userLocation.longitude }} icon = {'https://img.icons8.com/android/24/000000/car.png'}></Marker> : null}
                       <InfoWindowEx
                       marker={this.state.activeMarker}
                       visible={this.state.showingInfoWindow}>

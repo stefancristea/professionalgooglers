@@ -10,7 +10,7 @@ export default {
     },
     {
       name: 'Istoric locuri',
-      url: '/dashboard',
+      url: '/rentals',
       icon: 'icon-list' 
     }
   ]

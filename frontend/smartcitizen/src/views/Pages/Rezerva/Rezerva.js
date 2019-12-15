@@ -25,7 +25,11 @@ import {
   InputGroupText,
   Label,
   Row,
+  Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
+
+var globalThis = null;
+
 class Rezerva extends Component {
 
   constructor(props) {
@@ -37,12 +41,21 @@ class Rezerva extends Component {
       spot: 0,
       time: 0,
       renderSuccessMessage: false,
+      modal: false,
     }
+
+    globalThis = this;
 
     if(window.LoggedIn != true)
       return this.props.history.push('/login');
 
+    this.toggleModal = this.toggleModal.bind(this);
+
     this.getData();    
+  }
+
+  toggleModal() {
+    this.setState({modal: !this.state.modal});
   }
 
   getData() {
@@ -97,18 +110,26 @@ class Rezerva extends Component {
 
   submitForm(e) {
     e.preventDefault();
-    
-    let data = {
-      vehicleNumber: this.state.vehicle_number,
-      Time: this.state.time,
-      parkLot: this.props.match.params.id,
-      parkSpot: this.state.spot,
-      userID: window.userID
-    }
 
-    if(this.state.vehicle_number.length < 8 || this.state.vehicle_number.length > 9 || this.state.spot == 0 || this.state.time == 0)
+    if(globalThis.state.vehicle_number.length < 8 || globalThis.state.vehicle_number.length > 9 || globalThis.state.spot == 0 || globalThis.state.time == 0)
       return;
 
+    if(globalThis.state.vehicle_number.match(/^[A-Z]{2} [0-9]{2,3} [A-Z]{2}/g) == null)
+      return;  
+
+    this.setState({ modal: true });
+  }
+
+  doWebRequest() {
+    
+    let data = 
+    {
+      vehicleNumber: globalThis.state.vehicle_number,
+      Time: globalThis.state.time,
+      parkLot: globalThis.props.match.params.id,
+      parkSpot: globalThis.state.spot,
+      userID: window.userID
+    }
 
     var request = new Request('http://172.31.3.30:8080/addRent', {
       method: 'POST',
@@ -116,19 +137,16 @@ class Rezerva extends Component {
       body: JSON.stringify(data)
     })
 
-    var _this = this;
-
     fetch(request)
     .then(function(response){
     response.json()
       .then(function(data) {
         if(data.status == 'success')
-          _this.getData();
-          _this.forceUpdate();
-          _this.setState({ time: 0, spot: 0, vehicle_number: "", renderSuccessMessage: true});
+          globalThis.getData();
+          globalThis.forceUpdate();
+          globalThis.setState({ modal: false, time: 0, spot: 0, vehicle_number: "", renderSuccessMessage: true});
       })
     })
-
   }
 
   change(e) {
@@ -137,7 +155,43 @@ class Rezerva extends Component {
 
   render() {
     return (
+
       <div className="animated fadeIn">
+          <Modal isOpen={this.state.modal} toggle = {this.toggleModal} className={'modal-lg'}>
+            <ModalHeader toggle={this.toggleModal}> Factura loc parcare { this.props.spot }</ModalHeader>
+            <ModalBody>
+            <div className={"card-body"}>
+              <div className={'row'}>
+                <div className={'col-md-8'}>
+                  <div className={'table-responsive-sm'}><table className={'table table-striped'}><thead><tr><th className={'center'}>#</th><th>Item</th><th>Loc parcare</th><th className={'center'}>Timp</th><th className={'right'}>Cost per minut</th><th className={'right'}>Total</th></tr></thead><tbody><tr><td className={'center'}>1</td><td className={'left'}>Inchiriere loc parcare</td><td className={'left'}>Loc { this.state.spot }</td><td className={'center'}>{ this.state.time }</td><td className={'right'}>0.10 RON</td><td className={'right'}>{ this.state.time*0.10 } RON</td></tr></tbody></table></div>    
+                </div>
+              <div className={"col-md-4"}>
+              <table className={"table table-clear"}>
+              <tbody>
+                <tr>
+                  <td className={"left"}>
+                    <strong>VAT (10%)</strong>
+                  </td>
+                  <td className={"right"}>{(0.2 * 0.10 * this.state.time).toFixed(2)} RON</td>
+                </tr>
+                <tr>
+                  <td className={'left'}>
+                    <strong>Total</strong>
+                  </td>
+                  <td className={'right'}>
+                    <strong>{0.10 * this.state.time} RON</strong>
+                  </td>
+                </tr>
+              </tbody>
+              </table>
+              </div>
+          </div></div>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" onClick={this.doWebRequest}>Plateste</Button>{' '}
+              <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
+            </ModalFooter>
+          </Modal>
           <Row>
           <Col xs="12" md="6">
             <Alert isOpen={this.state.renderSuccessMessage == true}>

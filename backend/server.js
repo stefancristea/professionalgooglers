@@ -165,7 +165,7 @@ app.post('/addRent', function(request, response) {
 });
 
 app.post('/extendRent', function(request, response) {    
-    if(request.body.rentId || request.body.Time)
+    if(request.body.rentId == undefined || request.body.Time == undefined)
         return response.send({ status : 'error', message: 'Incomplete parameters.'});
         
     let timestampExpireTime = request.body.Time * 60000;
@@ -178,3 +178,14 @@ app.post('/extendRent', function(request, response) {
     });
 });
 
+
+app.post('/myParkings', function(request, response) {
+    if(request.body.userID == undefined)
+        return response.send({ status : 'error', message: 'Incomplete parameters.'});
+
+    db.query('select *, parking_lots.name, parking_lots.latitude, parking_lots.longitude from rentals left join parking_lots on rentals.parklot_id = parking_lots.id where user_id = ?;', [request.body.userID], function (error, results) {
+        if(error)
+            return response.send({status : 'error', message: 'MySQL Error!'});
+        response.send({status: 'success', parkings: results, serverTime: Date.now()});
+    });
+});

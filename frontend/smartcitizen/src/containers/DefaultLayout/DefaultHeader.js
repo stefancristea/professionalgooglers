@@ -33,18 +33,6 @@ class DefaultHeader extends Component {
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="md" mobile />
         <AppSidebarToggler className="d-md-down-none" display="lg" />
-
-        <Nav className="d-md-down-none" navbar>
-          <NavItem className="px-3">
-            <NavLink to="/dashboard" className="nav-link" >Dashboard</NavLink>
-          </NavItem>
-          <NavItem className="px-3">
-            <Link to="/users" className="nav-link">Users</Link>
-          </NavItem>
-          <NavItem className="px-3">
-            <NavLink to="#" className="nav-link">Settings</NavLink>
-          </NavItem>
-        </Nav>
         <Nav className="ml-auto" navbar>
           
         <NavItem className="d-md-down-none">
@@ -53,7 +41,7 @@ class DefaultHeader extends Component {
             ( <span>
             <NavLink to="/login" className="nav-link"><i className="icon-key"></i> Log In</NavLink> </span>) :
             <span>
-            <NavLink className="nav-link" onClick={e =>this.doLogout(e)}><i className="icon-key"></i> Log Out</NavLink>
+            <NavLink to = '' className="nav-link" onClick={e =>this.doLogout(e)}><i className="icon-key"></i> Log Out</NavLink>
             </span>
           }
           </NavItem>
