@@ -50,8 +50,11 @@ class Login extends Component {
           this_.setState({error: data});
           if (this_.state.error.type == "success") {            
             
-            window.LoggedIn = true;
-            window.userID = data.userID;
+            /*window.LoggedIn = true;
+            window.userID = data.userID;*/
+
+            sessionStorage.setItem('loggedIn', 'true');
+            sessionStorage.setItem('userID', data.userID);
             
             this_.setState({redirect : true}); 
           }

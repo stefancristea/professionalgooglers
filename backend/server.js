@@ -62,7 +62,7 @@ app.get('/getParkingLots', function(request, response) {
                 return response.send({ type: 'warning' });
 
             for(let i = 0; i < _results.length; i++) {
-                results[_results[i].parklot_id].emptySpots --;
+                results[_results[i].parklot_id-1].emptySpots --;
             }
 
             response.send({ type: 'success', 'results': results });       
@@ -86,7 +86,7 @@ app.get('/getParkingLotInformation/:lotID', function(request, response) {
                 let info = results[0];
                 info.Spots = [];
 
-                for(i = 1; i <= info.capacity; i++)
+                for(let i = 1; i <= info.capacity; i++)
                     info.Spots[i] = { occupied: false };
 
                 res.forEach(rezultat => {

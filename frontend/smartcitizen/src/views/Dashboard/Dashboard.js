@@ -79,7 +79,7 @@ class Dashboard extends Component {
 
   redirectToReserve = e => {
     e.preventDefault();
-    this.props.history.push('/rezerva/'+this.state.selectedPlace.name);   
+    this.props.history.push('/rezerva/'+this.returnLotInfo(this.state.selectedPlace.name, 'id'));   
   }
 
   displayMarkers = () => {

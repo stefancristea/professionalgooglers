@@ -46,7 +46,7 @@ class Rezerva extends Component {
 
     globalThis = this;
 
-    if(window.LoggedIn != true)
+    if(sessionStorage.getItem('loggedIn') !== 'true')
       return this.props.history.push('/login');
 
     this.toggleModal = this.toggleModal.bind(this);
@@ -129,7 +129,7 @@ class Rezerva extends Component {
       Time: globalThis.state.time,
       parkLot: globalThis.props.match.params.id,
       parkSpot: globalThis.state.spot,
-      userID: window.userID
+      userID: sessionStorage.getItem('userID')
     }
 
     var request = new Request(process.env.REACT_APP_BACKEND_ADDRESS+'/addRent', {
@@ -209,7 +209,7 @@ class Rezerva extends Component {
                       <Label htmlFor="numar">Numar de inmatriculare</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" id="numar" name="vehicle_number" ref = "vehicle_number" value={ this.state.vehicle_number } onChange={e => this.change(e)} placeholder="BV 04 BOS" />
+                      <Input type="text" id="numar" name="vehicle_number" ref = "vehicle_number" value={ this.state.vehicle_number } onChange={e => this.change(e)} placeholder="BV 01 ABC" />
                     </Col>
                   </FormGroup> 
                   <FormGroup row>

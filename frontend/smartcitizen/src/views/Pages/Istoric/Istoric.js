@@ -20,7 +20,7 @@ class Istoric extends Component {
 
     globalThis = this;
 
-    if(window.LoggedIn != true)
+    if(sessionStorage.getItem('loggedIn') !== 'true')
       return this.props.history.push('/login');
 
     this.loadData();
@@ -30,7 +30,7 @@ class Istoric extends Component {
     var request = new Request(process.env.REACT_APP_BACKEND_ADDRESS+'/myParkings/', {
       method: 'POST',
       headers: new Headers({'Content-Type': 'application/json'}),
-      body: JSON.stringify({ userID: window.userID})
+      body: JSON.stringify({ userID: sessionStorage.getItem('userID')})
     })
 
     fetch(request)
@@ -62,7 +62,7 @@ class Istoric extends Component {
     var request = new Request(process.env.REACT_APP_BACKEND_ADDRESS+'/deleteParking/', {
       method: 'POST',
       headers: new Headers({'Content-Type': 'application/json'}),
-      body: JSON.stringify({ userID: window.userID, spotID: this.state.spotID})
+      body: JSON.stringify({ userID: sessionStorage.getItem('userID'), spotID: this.state.spotID})
     });
 
     fetch(request)
@@ -83,7 +83,7 @@ class Istoric extends Component {
     var request = new Request(process.env.REACT_APP_BACKEND_ADDRESS+'/extendRent/', {
       method: 'POST',
       headers: new Headers({'Content-Type': 'application/json'}),
-      body: JSON.stringify({ userID: window.userID, rentId: this.state.spotID, Time: this.state.extend_time})
+      body: JSON.stringify({ userID: sessionStorage.getItem('userID'), rentId: this.state.spotID, Time: this.state.extend_time})
     });
 
     fetch(request)

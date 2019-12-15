@@ -19,7 +19,10 @@ class DefaultHeader extends Component {
 
   doLogout = e => {
     e.preventDefault();
-    window.LoggedIn = false;
+    
+    //window.LoggedIn = false;
+    sessionStorage.setItem('loggedIn', 'false');
+
     this.forceUpdate();        
     window.location = '/';
   }
@@ -40,7 +43,7 @@ class DefaultHeader extends Component {
           
         <NavItem className="d-md-down-none">
           {
-            (window.LoggedIn == false || window.LoggedIn == undefined)  ?
+            (/*window.LoggedIn == false || window.LoggedIn == undefined*/ sessionStorage.getItem('loggedIn') !== 'true')  ?
             ( <span>
             <NavLink to="/login" className="nav-link"><i className="icon-key"></i> Log In</NavLink> </span>) :
             <span>
