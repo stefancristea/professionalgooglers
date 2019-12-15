@@ -16,7 +16,7 @@ class DefaultFooter extends Component {
     return (
       <React.Fragment>
         <span>Smart Citizen - book your parking spot</span>
-        <span className="ml-auto">Powered by <a href="https://coreui.io/react">CoreUI for React</a></span>
+        <span className="ml-auto">Powered by <a href="https://coreui.io/react">CoreUI for <s>React</s> <i className={'fa fa-heart'} style={{color: 'red'}}></i></a></span>
       </React.Fragment>
     );
   }
