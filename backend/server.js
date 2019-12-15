@@ -169,7 +169,7 @@ app.post('/myParkings', function(request, response) {
     if(request.body.userID == undefined)
         return response.send({ status : 'error', message: 'Incomplete parameters.'});
 
-    db.query('select rentals.*, parking_lots.name, parking_lots.latitude, parking_lots.longitude from rentals left join parking_lots on rentals.parklot_id = parking_lots.id where user_id = ?;', [request.body.userID], function (error, results) {
+    db.query('select rentals.*, parking_lots.name, parking_lots.latitude, parking_lots.longitude from rentals left join parking_lots on rentals.parklot_id = parking_lots.id where user_id = ? order by rentals.id DESC;', [request.body.userID], function (error, results) {
         if(error)
             return response.send({status : 'error', message: 'MySQL Error!'});
         response.send({status: 'success', parkings: results, serverTime: Date.now()});
