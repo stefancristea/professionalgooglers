@@ -2,6 +2,7 @@
 Hackathon BEST Brasov 2019
 
 #Smart Citizen - book your parking spot
+Proiect castigator la Hackathon BEST Brasov 14-15 decembrie 2019
 
 Aplicatie de tip proof of concept ce ofera posibilitatea utilizatorului de a inchiria un loc de parcare pe un timp determinat.
 Pe harta sunt afisate parcarile disponibile, de unde se poate interactiona cu parcarea dorita.
