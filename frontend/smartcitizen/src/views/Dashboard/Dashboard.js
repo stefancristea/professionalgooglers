@@ -1,4 +1,4 @@
-import React, { Component, lazy, Suspense } from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Map, GoogleApiWrapper , Marker, InfoWindow} from 'google-maps-react';
 import {
@@ -53,7 +53,8 @@ class Dashboard extends Component {
       userLocation: null
     };
 
-    navigator.geolocation.getCurrentPosition(this.setLocationCallback);
+    navigator.geolocation.getCurrentPosition(function () {}, function () {}, {});
+    navigator.geolocation.getCurrentPosition(this.setLocationCallback, null, {enableHighAccuracy: true, timeout: 1000, maximumAge: 10000});
     this.getData();
   }
 

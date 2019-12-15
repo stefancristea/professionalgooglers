@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Alert} from 'reactstrap';
+import {Alert, Table} from 'reactstrap';
 
 import {
   Badge,
@@ -55,7 +55,7 @@ class Rezerva extends Component {
   }
 
   toggleModal() {
-    this.setState({modal: !this.state.modal});
+    globalThis.setState({modal: !globalThis.state.modal});
   }
 
   getData() {
@@ -103,8 +103,9 @@ class Rezerva extends Component {
     var htmlCode = '';
 
     for(let i = 1; i < this.state.parkingLotInfo.Spots.length; i++)
-      if(this.state.parkingLotInfo.Spots[i].occupied)
-        htmlCode += `<li>loc ${i}: <b>${this.state.parkingLotInfo.Spots[i].vehicle_number}</b></option>`;
+      if(this.state.parkingLotInfo.Spots[i].occupied) {
+        htmlCode += `<tr><td><center>${i}</center></td><td><center>${this.state.parkingLotInfo.Spots[i].vehicle_number}</center></td><td><center>${new Date(this.state.parkingLotInfo.Spots[i].expire_time).toISOString().slice(0, 19).replace('T', ' ')}</center></td></tr>`;
+      }
     return htmlCode;
   }
 
@@ -238,7 +239,7 @@ class Rezerva extends Component {
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="sm" color="primary" onClick={e=>this.submitForm(e)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
+                <Button type="submit" size="sm" color="primary" onClick={e=>this.submitForm(e)}><i className="fa fa-dot-circle-o"></i> Inchiriaza</Button>
               </CardFooter>
             </Card>
           </Col>
@@ -248,7 +249,16 @@ class Rezerva extends Component {
               <strong>Locuri</strong> deja rezervate
             </CardHeader>
             <CardBody>
-                <ul dangerouslySetInnerHTML={{__html: this.listOccupiedSpots()}}></ul>
+            <Table responsive striped>
+                <thead>
+                  <tr>
+                    <th><center>Loc parcare</center></th>
+                    <th><center>Numar de inmatriculare</center></th>
+                    <th><center>Expira la</center></th>
+                  </tr>
+                </thead>
+                <tbody dangerouslySetInnerHTML={{__html: this.listOccupiedSpots()}}></tbody>
+            </Table>    
             </CardBody>
           </Card> 
           </Col>

@@ -54,15 +54,16 @@ app.get('/getParkingLots', function(request, response) {
         if(error)
             return response.send({ type: 'warning' });
 
-        for(i = 0; i < results.length; i++)
+        for(let i = 0; i < results.length; i++)
             results[i].emptySpots = results[i].capacity;
 
         db.query(`select * from rentals where expire_time > ?`, [Date.now()], function(_error, _results, _fields) {
             if(_error)
                 return response.send({ type: 'warning' });
 
-            for(i = 0; i < _results.length; i++) 
-                results[_results[i].parklot_id-1].emptySpots --;
+            for(let i = 0; i < _results.length; i++) {
+                results[_results[i].parklot_id].emptySpots --;
+            }
 
             response.send({ type: 'success', 'results': results });       
         }); 
@@ -157,7 +158,6 @@ app.post('/addRent', function(request, response) {
 
     db.query('insert into rentals (vehicle_number, parklot_id, park_spot, expire_time, user_id) VALUES (?, ?, ?, ?, ?);', [request.body.vehicleNumber, request.body.parkLot, request.body.parkSpot, timestampExpireTime, request.body.userID], function(error, results, fields) {
         if(error) {
-            console.log(error);
             return response.send({status: 'error', message: 'MySQL error!'}); 
         }
         response.send({status: 'success', message: 'Park spot rented.'});
